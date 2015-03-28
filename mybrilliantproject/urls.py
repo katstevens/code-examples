@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 
-urlpatterns = patterns('mybrilliantproject.pages.views',
+urlpatterns = patterns('mybrilliantproject.views',
 	
 	url(r'^$', 'home',  name='home'),
 	# Alias to assist the terminally confused
