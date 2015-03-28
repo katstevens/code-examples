@@ -14,7 +14,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db import models
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
 
 DEFAULT_IMAGE = 'unknown_image.png'
 AMAZING_CHOICES = ['pugs','metal','biscuits','mt_everest']
