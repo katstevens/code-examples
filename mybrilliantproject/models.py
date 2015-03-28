@@ -26,6 +26,15 @@ class Page(models.Model):
 	def __unicode__(self):
 		return smart_unicode(self.title)
 	
+	class Meta:
+		ordering = ['title']
+	
+	def get_wordcount(self):
+		"For display in Admin"
+		words = self.content.split(' ')
+		return len(words)
+	get_wordcount.short_description = "Word Count"
+	
 	def validate_redirect(self):
 		"Double check that the URL is either relative or present in ALLOWED_HOSTS"
 		if self.redirect_url:
