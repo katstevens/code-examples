@@ -50,7 +50,7 @@ class Wine(models.Model):
 
 	def __unicode__(self):
 		if self.vintage == '0':
-	    	return self.display_name
+			return self.display_name
 		return "%s %s" % (self.vintage, self.display_name)
 
 
@@ -62,45 +62,35 @@ def copy_bottle_image_to_sister_wines(request, wine_id):
 	Give sensible error messages to the user if unable to do so.
 	"""	
 	wine = get_object_or_404(Wine,pk=wine_id)
-	updated, f, url = 0, False, False
+	updated, url = 0, False
 	
 	if wine.wine_code in PROBLEM_WINE_CODES:
 		return HttpResponse("Images cannot be copied for this wine.")
 	else:
 		ws = Wine.objects.filter(wine_code=wine.wine_code).exclude(pk=wine.id)
 	
-	if ws:
-	  # Look for file - this should take precedence over a static url
-	  try:
-	  	f = wine.bottle_image_file	
-	  except:
-		f = False
+	if not ws:
+		return HttpResponse("No wines to update.")		
 	
-		if not f:
-  			if wine.image_url == DEFAULT_IMAGE:
-			  	return HttpResponse("This url cannot be copied to other wines.") 
-			else:
-				url = wine.image_url
-	
-	  	# Try file first
-		if f:		
-			  for w in ws:
-				# Do not overwrite any existing images! So we can't use update() here.
-				if not w.has_proper_image():
-					w.image_file = f
-					w.save()
-					updated += 1
-		  	return HttpResponse("%d wines updated with image file." % updated)
-  		elif url:
-			for w in ws:
-			  	# As above, do not overwrite any existing images
-				if not w.has_proper_image():
-					w.image_url = url
-					w.save()
-					updated += 1
-			return HttpResponse("%d wines updated with image url." % updated)
-		else:
-			return HttpResponse("No file or url available.")
-	
-	return HttpResponse("No wines to update.")
-	
+	# Look for a file first - this should take precedence over a static url
+	if wine.bottle_image_file:
+		for w in ws:
+			# Do not overwrite any existing images. So we can't use update() here.
+			if not w.has_proper_image():
+				w.image_file = wine.bottle_image_file
+				w.save()
+				updated += 1
+		return HttpResponse("%d wines updated with image file." % updated)
+		
+	elif wine.image_url == DEFAULT_IMAGE:
+		return HttpResponse("This url cannot be copied to other wines.") 
+	elif wine.image_url:
+		for w in ws:
+			# As above, do not overwrite any existing images
+			if not w.has_proper_image():
+				w.image_url = url
+				w.save()
+				updated += 1
+		return HttpResponse("%d wines updated with image url." % updated)
+	else:
+		return HttpResponse("No file or url available.")
