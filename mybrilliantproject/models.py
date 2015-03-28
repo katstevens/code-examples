@@ -4,6 +4,7 @@ to be intuitive for non-technical users encountering them in the admin.
 """
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse 
 from django.utils.encoding import smart_unicode
 from django.utils.http import is_safe_url
 
@@ -30,4 +31,6 @@ class Page(models.Model):
 		if self.redirect_url:
 			if not is_safe_url(self.redirect_url):
 				raise ValidationError("Please enter a safe and valid URL.")
+			if self.redirect_url == reverse('page', args=[self.slug]):
+				raise ValidationError("This will cause a redirect loop. Try something else!")
 		return True
