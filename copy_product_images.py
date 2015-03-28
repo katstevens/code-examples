@@ -23,7 +23,7 @@ from django.utils.translation import ugettext_lazy as _
 DEFAULT_IMAGE = 'unknown_bottle.png'
 PROBLEM_WINE_CODES = ["","X","1013544","1017757"]
 DUTY_CHOICES = ["red","white","sparkling","fortified"]
-VINTAGE_HELP_TEXT = _("Enter full year (e.g. '1982'), 'NV' or '0' for multi-vintage collections.")
+VINTAGE_HELP_TEXT = _("Enter full year (e.g. '1970'), 'NV' or '0' for multi-vintage collections.")
 DUTY_HELP_TEXT = _("For duty calculation purposes, i.e. sparkling is the same duty rate as Champagne.")
 
 # example Model used by the function
@@ -84,6 +84,7 @@ def copy_bottle_image_to_sister_wines(request, wine_id):
 		
 	elif wine.image_url == DEFAULT_IMAGE:
 		return HttpResponse("This url cannot be copied to other wines.") 
+	
 	elif wine.image_url:
 		for w in ws:
 			# As above, do not overwrite any existing images
@@ -92,5 +93,6 @@ def copy_bottle_image_to_sister_wines(request, wine_id):
 				w.save()
 				updated += 1
 		return HttpResponse("%d wines updated with image url." % updated)
+	
 	else:
 		return HttpResponse("No file or url available.")
