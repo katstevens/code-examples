@@ -7,6 +7,7 @@ The model has two different fields for image display:
 - a URLField  'image_url'   (an external image or static file)
 
 The URLField default is a static file, 'unknown_image.png'.
+Let's assume that the form is going to handle URL validation.
 
 """
 
@@ -16,7 +17,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 DEFAULT_IMAGE = 'unknown_image.png'
-AMAZING_CHOICES = ['pugs','metal','biscuits','mt_everest']
+AMAZING_CHOICES = ['pugs','metal','biscuits','mt_everest','something_else']
 
 # example Model used by the function
 class BrilliantThing(models.Model):
